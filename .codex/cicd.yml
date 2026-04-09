@@ -1,0 +1,9 @@
+version: 1
+
+pipeline:
+  provider: woodpecker
+  woodpecker:
+    local: true
+
+health_checks:
+  enabled: false

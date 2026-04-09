@@ -1,0 +1,77 @@
+woodpecker-history-scan generated_at=2026-04-09T11:16:46Z
+
+=== claude-power-pack ===
+path=/home/cooneycw/Projects/claude-power-pack
+woodpecker_commit_count=8
+- dc8ade3|2026-03-15|feat(cicd): add drift detection for host-managed deploy artifacts (Closes #285) (#286)
+- 8b0b9a7|2026-03-11|feat(woodpecker-ci): add Woodpecker CI MCP server to Tier 4 (Closes #283) (#284)
+- f6c493b|2026-03-07|perf(ci): consolidate pipeline steps, add health-based deploy verification (#240)
+- f903929|2026-03-07|fix(ci): Mount docker.sock in deploy-mcp step
+- 4d98bc6|2026-03-06|fix(ci): Fix Woodpecker pipeline linter warnings
+- 8c69c42|2026-03-06|feat(woodpecker): Add MCP server auto-deploy pipeline (Closes #235) (#236)
+- 6f33fe0|2026-03-05|Remove Redis coordination server and all references (#212) (#214)
+- 1fca218|2026-03-05|feat(docker): Add Dockerfiles, docker-compose, and Woodpecker CI for all MCP servers (Closes #190, Closes #191, Closes #192) (#200)
+
+=== codex-power-pack ===
+path=/home/cooneycw/Projects/codex-power-pack
+woodpecker_commit_count=12
+- e8fe772|2026-03-28|chore(ci): clean up pipeline and remove deprecated mcp-evaluate
+- 1d7ef8a|2026-03-15|feat(deploy): inject AWS secrets via Woodpecker for sidecar auth
+- 0db011e|2026-03-15|fix(cicd): skip bandit false positives in CI runner and container code
+- d7517e9|2026-03-15|fix(cicd): add gitleaks allowlist for test fixture false positives
+- 71e9ec1|2026-03-15|fix(deploy): use docker exec for CI smoke instead of volume mount
+- dabb129|2026-03-15|fix(deploy): canonicalize MCP deploy path (Closes #42) (#44)
+- 160070c|2026-03-13|fix(codex-woodpecker): align go parity + stdio smoke (Closes #40) (#41)
+- 2a1dd82|2026-03-13|fix(ci): drop make dependency from validate step
+- 4a8ae0d|2026-03-12|fix(ci): rename mcp-* directories to codex-* to complete naming migration (#26)
+- 33c9091|2026-03-12|fix(ci): install make in Woodpecker validate step
+- 89495cb|2026-03-11|Tighten Woodpecker pipeline
+- 26f9b0b|2026-03-11|Initial Codex Power Pack port
+
+=== personas-service ===
+path=/home/cooneycw/Projects/personas-service
+woodpecker_commit_count=19
+- f077a86|2026-04-05|fix(deploy): make sibling fanout best-effort by default
+- bb1c1bf|2026-04-05|fix(deploy): allow canonical runtime env during deploy builds
+- 8258a7d|2026-04-05|fix(ci): harden deploy runner auth and sync pipeline contract
+- 3b9a349|2026-04-05|fix(deploy): sync stale .ci-netrc cleanup from voice-bot-acs#656 (#100)
+- 1660ae9|2026-04-05|fix(ci): bootstrap deploy auth from gh hosts config (#99)
+- 4cd2af0|2026-04-05|fix(ci): bootstrap github auth for deploy-local (Closes #97) (#98)
+- f6a77b4|2026-04-05|fix(ci): rename deploy workflow for fanout consistency (Closes #90) (#93)
+- e0c0cdf|2026-04-05|fix(deploy): use configurable voice-bot-acs workspace (Closes #91) (#94)
+- a7ef829|2026-04-05|Allow anonymous canonical checkout sync
+- e2f7e32|2026-04-05|Harden shared pipeline contract
+- 1dd19c0|2026-04-05|Fix fanout helper Ruff violations
+- ec69646|2026-04-05|Pin CI to proxVMvoice18
+
+=== voice-bot-acs ===
+path=/home/cooneycw/Projects/voice-bot-acs
+woodpecker_commit_count=83
+- a86ccbb|2026-04-05|fix(ci): harden docker host guard probe path (Closes #676) (#678)
+- a04576c|2026-04-05|fix(ci): guard fanout contract drift without blocking healthy deploys (#675)
+- 2b9e2e0|2026-04-05|fix(ci): harden deploy runner auth and sync pipeline contract
+- 6e68bd9|2026-04-05|fix(ci): acquire deploy lock in docker-cleanup cron to prevent build cache race (Closes #658) (#670)
+- 2a6db96|2026-04-05|fix(deploy): clean up stale .ci-netrc temp files on script start (Closes #656) (#669)
+- e1117e8|2026-04-05|Allow anonymous canonical checkout sync
+- a39bb57|2026-04-05|Harden shared pipeline contract
+- ca06994|2026-04-05|Fix fanout helper Ruff violations
+- a6cd95d|2026-04-05|Pin CI to proxVMvoice18
+- ff8a52e|2026-04-05|Refactor deploy orchestration around Woodpecker fanout
+- 5788a61|2026-04-05|fix(ci): mount .netrc as file + aggressive repo corruption repair
+- fee8994|2026-04-04|fix(ci): override alpine/git entrypoint so sh -c works
+
+=== whisper-stt-bench ===
+path=/home/cooneycw/Projects/whisper-stt-bench
+woodpecker_commit_count=16
+- 332f297|2026-04-05|fix(ci): harden deploy auth checks
+- d6fe152|2026-04-05|fix(ci): correct stale aggregate hash in shared-pipeline-hashes.json
+- 63e29d3|2026-04-05|fix(ci): bootstrap GitHub auth for deploy-local canonical checkout (Closes #18) (#20)
+- 73d79f9|2026-04-05|fix(deploy): sync stale .ci-netrc cleanup from voice-bot-acs#656 (#19)
+- d6e750f|2026-04-05|fix(deploy): make whisper fanout best-effort (#17)
+- 06158b7|2026-04-05|fix(deploy): avoid woodpecker repo discovery in fanout (#15)
+- 113d774|2026-04-05|fix(deploy): expose mounted aws creds to fanout (#14)
+- 89b158f|2026-04-05|fix(deploy): wire secrets sidecar without blocking GPU runtime (#13)
+- 08b85db|2026-04-05|fix(ci): pin pipeline images and unblock tests (Closes #9) (#12)
+- befedbd|2026-04-05|fix(ci): document whisper CI dependency and restore server tests (Closes #10) (#11)
+- a073498|2026-04-05|Allow anonymous canonical checkout sync
+- 3c5b1e7|2026-04-05|Harden shared pipeline contract
