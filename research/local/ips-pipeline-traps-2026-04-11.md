@@ -161,12 +161,106 @@ against the same host. The second deploy may overwrite the first mid-flight.
 
 ---
 
+---
+
+## Trap 4: `pip3 install awscli` is NOT a fix for Alpine 3.21 pyexpat
+
+**Severity:** HIGH (false fix that looks correct but fails the same way)
+
+**Context:** After discovering that `apk add aws-cli` was broken (Trap 1), the first attempt at
+a fix was to replace it with `pip3 install --quiet awscli`. This was wrong.
+
+**Failure mode:**
+```
++ pip3 install --quiet awscli
+...Installing py3-pip...
+Traceback (most recent call last):
+  File "/usr/bin/pip3", line 8, in <module>
+    sys.exit(main())
+  ...
+  File "/usr/lib/python3.12/site-packages/pip/_vendor/distlib/compat.py", line 81, in <module>
+    import xmlrpc.client as xmlrpclib
+  File "/usr/lib/python3.12/xmlrpc/client.py", line 138, in <module>
+    from xml.parsers import expat
+  File "/usr/lib/python3.12/xml/parsers/expat.py", line 4, in <module>
+    from pyexpat import *
+ImportError: Error relocating pyexpat.cpython-312-x86_64-linux-musl.so:
+  XML_SetAllocTrackerActivationThreshold: symbol not found
+```
+
+**Root cause:** `pip` itself — not `awscli` — imports `pip._vendor.distlib.compat` during the
+`install` command, which imports `xmlrpc.client → pyexpat`. The crash happens before pip even
+attempts to download awscli. The broken pyexpat symbol hits regardless of which package pip is
+installing.
+
+**Confirmed via:** Pipeline #565, step `build-and-push-sidecar` (step ID 26799), 2026-04-11.
+
+**Correct fix:** AWS CLI v2 binary installer. Bundles its own Python runtime — Alpine's broken
+pyexpat is never loaded:
+```yaml
+- apk add --no-cache python3 curl unzip
+  && curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscli.zip
+  && unzip -q /tmp/awscli.zip -d /tmp
+  && /tmp/aws/install
+```
+`python3` is still needed via `apk` for JSON parsing in `fetch-secrets.sh` (uses `import json`
+only — no `pyexpat` transitive dependency).
+
+**Detection check:** In Alpine-based images, ANY use of `pip install` or `pip3 install` is
+suspect — pip's own machinery hits pyexpat before installing anything. Use:
+1. AWS CLI v2 binary installer (for aws-cli)
+2. `python:*-slim-bookworm` image (Debian) instead of Alpine
+3. Pre-baked CI image (voice-bot-acs pattern) with tools pre-installed
+
+---
+
+## Trap 5: Cloudflare tunnel reconnection lag in smoke-tests
+
+**Severity:** MEDIUM (intermittent failures after every deploy)
+
+**Pattern detected:**
+```yaml
+- name: smoke-test
+  image: alpine/curl:latest
+  commands:
+    - |
+      PASS=0; FAIL=0                    # ← starts immediately after deploy-local
+      for ep in health ...; do
+        for attempt in $(seq 1 6); do   # 6 attempts × 5s = 30s total window
+          RESP=$(curl ... "https://insurance-pricing-simulation.ca/$ep/")
+```
+
+**Failure mode:** `deploy-local` restarts Docker Compose services. Cloudflare tunnel container
+also restarts. The tunnel takes ~20–30s to re-establish the outbound connection to Cloudflare's
+network. Health checks hit the public URL during this window and get connection errors, causing
+all 5 endpoints to fail the 6×5s retry loop.
+
+**Why it keeps recurring:** The smoke-test was written assuming instant availability. The
+Cloudflare tunnel introduces a cold-start latency that is invisible when testing manually
+(the tunnel is already running) but always fires in CI (deploy always restarts it).
+
+**Fix:**
+```yaml
+- echo "Waiting 30s for Cloudflare tunnel to stabilise after service restart..."
+- sleep 30
+- PASS=0; FAIL=0
+  ...
+```
+The `sleep 30` gives the tunnel time to reconnect before the first health check attempt.
+The subsequent 6×5s retry window is additional insurance.
+
+**Detection check:** Any smoke-test that hits a Cloudflare-tunnelled URL immediately after
+a `docker-compose up` or equivalent restart step needs a pre-wait buffer.
+
+---
+
 ## IPS-Specific Remediation Priority
 
-| Priority | Fix | Effort | Blocks |
+| Priority | Fix | Effort | Status |
 |----------|-----|--------|--------|
-| 1 | Add `git config --global safe.directory` to deploy-dev.yml | 1 line | Every push |
-| 2 | Fix `apk add aws-cli` in engine-container.yml + web-container.yml | Small | Next engine/web change |
-| 3 | Fix `apk add aws-cli` in ci.yml sidecar steps + remove `failure: ignore` | Small | Sidecar ECR push |
-| 4 | Adopt pre-built CI deploy image (Dockerfile.ci-deploy pattern) | Medium | Long-term fragility |
-| 5 | Add stale commit guard to deploy-dev.yml | Small | Race conditions |
+| 1 | Add `git config --global safe.directory` to deploy-dev.yml | 1 line | ✅ Done (#628) |
+| 2 | Fix aws-cli in engine-container.yml + web-container.yml (binary installer) | Small | ✅ Done (#629) |
+| 3 | Fix aws-cli in ci.yml sidecar + binary installer (was masked by failure:ignore) | Small | ✅ Done (#629) |
+| 4 | Add `sleep 30` before smoke-test retry loop in deploy-dev.yml | 1 line | ✅ Done (#629) |
+| 5 | Adopt pre-built CI deploy image (Dockerfile.ci-deploy pattern) | Medium | Open |
+| 6 | Add stale commit guard to deploy-dev.yml | Small | Open |
