@@ -8,4 +8,10 @@ build/
 .ruff_cache/
 .mypy_cache/
 .env
+.env.*
+*.pem
+*.key
+*.p12
+secrets.*
+.claude/security.yml
 .codex/settings.local.json

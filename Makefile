@@ -1,10 +1,10 @@
 .PHONY: lint test verify report
 
 lint:
-	uv run --frozen ruff check . || ruff check .
+	uv run --frozen ruff check .
 
 test:
-	uv run --frozen pytest || pytest
+	uv run --frozen pytest
 
 verify: lint test
 
