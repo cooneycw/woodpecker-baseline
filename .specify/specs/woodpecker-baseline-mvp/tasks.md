@@ -28,3 +28,11 @@ Research file: `research/local/ips-pipeline-traps-2026-04-11.md`
 - [ ] T015 Add Pattern: stale commit guard before deploy (ls-remote SHA comparison)
 - [ ] T016 Extend detection checks: grep rules for `apk add aws-cli` and git-without-safe-directory
 - [ ] T017 Rescan IPS repo history into local history scan (IPS was missing from April 9 scan)
+
+## Wave 4: Root-Owned Workspace Trap (2026-04-12)
+
+Findings from root-container deploys in voice-bot-acs, personas-service, whisper-stt-bench (issue #1).
+Research file: `research/local/root-owned-workspace-trap-2026-04-12.md`
+
+- [x] T018 Add Trap: root-owned host workspace after root-container deploy (`make fix-ownership` pattern)
+- [ ] T019 Extend detection checks: ownership repair must run from `trap ... EXIT`, not only on the success path
