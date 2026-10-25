@@ -5,7 +5,7 @@ description = "Baseline patterns and trap detection for Woodpecker deployments"
 requires-python = ">=3.11"
 dependencies = []
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
   "pytest>=8.0",
   "ruff>=0.4",
