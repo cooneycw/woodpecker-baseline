@@ -1,0 +1,11 @@
+{
+  "branch": "issue-1-fix-woodpecker-ci-deploys-create-root-owned-files",
+  "head": "72433537b7dd27513707eb30c840554faa0507e7",
+  "implementer": "claude/claude-opus-5-5",
+  "issue": "1",
+  "recorded_at": "2026-10-25T22:36:37Z",
+  "reviewer": null,
+  "schema": 1,
+  "skip_reason": "codex-absent",
+  "status": "skipped"
+}

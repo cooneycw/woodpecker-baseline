@@ -54,6 +54,7 @@ Acceptance criteria:
 5. Shared script contract drift across fanout repos
 6. False readiness checks (service ping != service usable)
 7. Deploy source divergence (CI checkout vs canonical host clone)
+8. Root-owned host workspace after root-container deploy (`research/local/root-owned-workspace-trap-2026-04-12.md`)
 
 ## Success Criteria
 
